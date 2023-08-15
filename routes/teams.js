@@ -9,9 +9,6 @@ router.post("/", auth.reqAuth, async (req, res) => {
     teamLevel: req.body.teamLevel,
     userId: req.userId,
   });
-
-  console.log("creating team with:", team);
-
   try {
     const newTeam = await team.save();
     res.status(201).json(newTeam);
@@ -29,11 +26,22 @@ router.post("/", auth.reqAuth, async (req, res) => {
 router.get("/", auth.reqAuth, async (req, res) => {
   const userId = req.userId
   try {
-    const teams = await Team.find({ userId : userId });
+    const teams = await Team.find({ userId });
     res.json({ teams })
   } catch (err) {
     res.status(500).json({ message: "error interacting with db" });
   }
 });
+
+router.get("/getTeamName", auth.reqAuth, async (req, res) => {
+  const { teamId } = req.query;
+  try {
+    const team = await Team.find({ _id : teamId })
+    const nameToReturn = team[0].teamName
+    res.json(nameToReturn)
+  } catch (err) {
+    res.status(500).json({ message: "error interacting with db" });
+  }
+})
 
 module.exports = router;

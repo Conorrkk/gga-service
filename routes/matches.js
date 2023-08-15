@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 // getting one
 router.get("/:id", auth.reqAuth, async (req, res) => {
   try {
@@ -27,8 +28,6 @@ router.get("/:id", auth.reqAuth, async (req, res) => {
 
 // creating one
 router.post("/", auth.reqAuth, async (req, res) => {
-  console.log("adding match");
-  console.log(req.body);
   const match = new Match({
     teams: {
       oppositionTeam: req.body.opponent,
@@ -49,7 +48,6 @@ router.patch("/:id/addPlayers", auth.reqAuth, async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
-    console.log("player to add:", playerId);
     const updatedMatch = await Match.findOneAndUpdate(
       // matching the match id with the one passed in
       { _id: matchId },
@@ -86,5 +84,80 @@ async function getMatch(req, res, next) {
   res.match = match;
   next();
 }
+
+router.patch("/:id/addGoal", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.goal_from_play": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/addPoint", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.point_from_play": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.wide": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
 module.exports = router;

@@ -6,6 +6,18 @@ const matchSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    goalFor: {
+        type: Number
+    },
+    pointFor: {
+        type: Number
+    },
+    goalAgainst: {
+        type: Number
+    },
+    pointAgainst: {
+        type: Number
+    },
     teams: {
         oppositionTeam: {
             type: String,
@@ -33,7 +45,7 @@ const matchSchema = new mongoose.Schema({
                 point_from_dead: {
                     type: Number
                 },
-                wides: {
+                wide: {
                     type: Number
                 },
                 saved: {

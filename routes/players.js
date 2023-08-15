@@ -10,33 +10,33 @@ router.post("/", auth.reqAuth, async (req, res) => {
     teamId: req.body.teamId,
   });
 
-  console.log("creating player with:", player);
-
   try {
     const newPlayer = await player.save();
     res.status(201).json(newPlayer);
   } catch (err) {
-    // mongodb error 11000 is a dublicate key error - might not need this here - what if there is a team with 2 players with same name and position?
-    //   if (err.code === 11000) {
-    //     return res
-    //       .status(400)
-    //       .json({ message: "player already created" });
-    //   }
     res.status(400).json({ message: err.message });
   }
 });
 
 router.get("/", auth.reqAuth, async (req, res) => {
-  console.log("trying to get players")
- 
   const { teamId } = req.query;
-  console.log(teamId)
   try {
     const players = await Player.find({ teamId : teamId });
-    console.log(players)
     res.json(players);
   } catch (err) {
     res.status(500).json({ message: "error interacting with db" });
+  }
+});
+
+router.get("/:id", auth.reqAuth, async (req, res) => {
+  try {
+    const player = await Player.findById(req.params.id);
+    if (player == null) {
+      return res.status(404).json({ message: "Cannot find player" });
+    }
+    res.json(player);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
