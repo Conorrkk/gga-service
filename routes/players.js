@@ -3,6 +3,7 @@ const router = express.Router();
 const Player = require("../models/player");
 const auth = require("../middleware/authentication");
 
+// method to create a new player
 router.post("/", auth.reqAuth, async (req, res) => {
   const player = new Player({
     playerName: req.body.playerName,
@@ -18,6 +19,7 @@ router.post("/", auth.reqAuth, async (req, res) => {
   }
 });
 
+// method to get all players for a specific team
 router.get("/", auth.reqAuth, async (req, res) => {
   const { teamId } = req.query;
   try {
@@ -28,6 +30,7 @@ router.get("/", auth.reqAuth, async (req, res) => {
   }
 });
 
+// method to get a single player
 router.get("/:id", auth.reqAuth, async (req, res) => {
   try {
     const player = await Player.findById(req.params.id);

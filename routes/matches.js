@@ -115,7 +115,7 @@ router.patch("/:id/addPoint", auth.reqAuth, async (req, res) => {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
 
-    // Update the goal_from_play statistic for the specified player
+    // Update the point_from_play statistic for the specified player
     // $inc is for incrementing - can be used for all stats
     const updatedMatch = await Match.findOneAndUpdate(
       {
@@ -157,6 +157,51 @@ router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
     res.json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+// get total goals scored by a team in one match
+router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    
+    const match = await Match.findById(matchId);
+
+    if (!match) {
+      return res.status(404).json({ message: "Match not found" });
+    } else {
+      // using Array.reduce method because an async forEach was causing loop to iterate and complete before
+      // totalGoals was updated. This ensures a value will accumulate before the loop terminates
+      const totalGoals = match.teams.players.reduce((accumulator, player) => {
+        return accumulator + player.stats.goal_from_play;
+      }, 0);
+      res.json({ totalGoals });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// get total goals scored by a team in one match
+router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    
+    const match = await Match.findById(matchId);
+
+    if (!match) {
+      return res.status(404).json({ message: "Match not found" });
+    } else {
+      // using Array.reduce method because an async forEach was causing loop to iterate and complete before
+      // totalGoals was updated. This ensures a value will accumulate before the loop terminates
+      const totalPoints = match.teams.players.reduce((accumulator, player) => {
+        return accumulator + player.stats.point_from_play;
+      }, 0);
+    
+      res.json({ totalPoints });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
