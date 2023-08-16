@@ -4,10 +4,12 @@ const Match = require("../models/match");
 const auth = require("../middleware/authentication");
 
 // getting all
-router.get("/", async (req, res) => {
+router.get("/", auth.reqAuth, async (req, res) => {
+  const userId = req.userId;
   try {
-    const matches = await Match.find();
-    res.json(matches);
+    const matches = await Match.find({ userId });
+    console.log("matches:", { matches });
+    res.json({ matches });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -21,6 +23,7 @@ router.get("/:id", auth.reqAuth, async (req, res) => {
       return res.status(404).json({ message: "Cannot find match" });
     }
     res.json(match);
+    console.log(match)
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -164,7 +167,7 @@ router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
 router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
   try {
     const matchId = req.params.id;
-    
+
     const match = await Match.findById(matchId);
 
     if (!match) {
@@ -186,7 +189,7 @@ router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
 router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
   try {
     const matchId = req.params.id;
-    
+
     const match = await Match.findById(matchId);
 
     if (!match) {
@@ -197,11 +200,47 @@ router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
       const totalPoints = match.teams.players.reduce((accumulator, player) => {
         return accumulator + player.stats.point_from_play;
       }, 0);
-    
+
       res.json({ totalPoints });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/addOpponentPoints", auth.reqAuth, async (req, res) => {
+  try {
+    console.log("Adding points");
+    const id = req.params.id;
+    const points = req.body.pointsAgainst
+
+    const updatedMatch = await Match.findOneAndUpdate(
+      { _id: id },
+      { $set: { "pointAgainst": points } },
+      { new: true }
+    );
+
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/addOpponentGoals", auth.reqAuth, async (req, res) => {
+  try {
+    console.log("Adding goals");
+    const id = req.params.id;
+    const goals = req.body.goalsAgainst
+
+    const updatedMatch = await Match.findOneAndUpdate(
+      { _id: id },
+      { $set: { "goalAgainst": goals } },
+      { new: true }
+    );
+
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 

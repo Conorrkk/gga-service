@@ -6,12 +6,6 @@ const matchSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
-    goalFor: {
-        type: Number
-    },
-    pointFor: {
-        type: Number
-    },
     goalAgainst: {
         type: Number
     },
