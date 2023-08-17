@@ -8,7 +8,6 @@ router.get("/", auth.reqAuth, async (req, res) => {
   const userId = req.userId;
   try {
     const matches = await Match.find({ userId });
-    console.log("matches:", { matches });
     res.json({ matches });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -23,7 +22,6 @@ router.get("/:id", auth.reqAuth, async (req, res) => {
       return res.status(404).json({ message: "Cannot find match" });
     }
     res.json(match);
-    console.log(match)
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -163,6 +161,30 @@ router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
   }
 });
 
+// get total goals scored by a player in all their matches
+// router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
+//   try {
+//     const matchId = req.params.id;
+
+//     const match = await Match.findById(matchId);
+
+//     if (!match) {
+//       return res.status(404).json({ message: "Match not found" });
+//     } else {
+//       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
+//       // totalGoals was updated. This ensures a value will accumulate before the loop terminates
+//       const totalGoals = match.teams.players.reduce((accumulator, player) => {
+//         // if a player has no recorded goals yet then count this as an int of 0
+//         const playerGoals = player.stats.goal_from_play || 0;
+//         return accumulator + playerGoals;
+//       }, 0);
+//       res.json({ totalGoals });
+//     }
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
 // get total goals scored by a team in one match
 router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
   try {
@@ -214,13 +236,12 @@ router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
 
 router.patch("/:id/addOpponentPoints", auth.reqAuth, async (req, res) => {
   try {
-    console.log("Adding points");
     const id = req.params.id;
-    const points = req.body.pointsAgainst
+    const points = req.body.pointsAgainst;
 
     const updatedMatch = await Match.findOneAndUpdate(
       { _id: id },
-      { $set: { "pointAgainst": points } },
+      { $set: { pointAgainst: points } },
       { new: true }
     );
 
@@ -232,19 +253,28 @@ router.patch("/:id/addOpponentPoints", auth.reqAuth, async (req, res) => {
 
 router.patch("/:id/addOpponentGoals", auth.reqAuth, async (req, res) => {
   try {
-    console.log("Adding goals");
     const id = req.params.id;
-    const goals = req.body.goalsAgainst
+    const goals = req.body.goalsAgainst;
 
     const updatedMatch = await Match.findOneAndUpdate(
       { _id: id },
-      { $set: { "goalAgainst": goals } },
+      { $set: { goalAgainst: goals } },
       { new: true }
     );
 
     res.json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+router.get("/player/:id", auth.reqAuth, async (req, res) => {
+  try {
+    const playerId = req.params.id;
+    const matches = await Match.find({ "teams.players.playerId": playerId });
+    res.json({ matches });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

@@ -54,7 +54,16 @@ router.delete("/:id", getTeam, async (req, res) => {
   }
 });
 
-// gets one team
+// get one team
+router.get("/:id", auth.reqAuth, getTeam, async (req, res) => {
+  try {
+    res.json(res.team);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// gets one team function
 async function getTeam(req, res, next) {
   let team;
   try {
