@@ -28,49 +28,64 @@ const matchSchema = new mongoose.Schema({
             },
             stats: {
                 goal_from_play: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 point_from_play: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 goal_from_dead: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 point_from_dead: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 wide: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 saved: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 catch_made: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 catch_missed:{
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 pass_made: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 pass_missed: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 turnover_won: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 free_conceded: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 block_hook: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 yellow_card: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 },
                 red_card: {
-                    type: Number
+                    type: Number,
+                    default: 0
                 }
             }
         }]

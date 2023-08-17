@@ -176,7 +176,9 @@ router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
       // totalGoals was updated. This ensures a value will accumulate before the loop terminates
       const totalGoals = match.teams.players.reduce((accumulator, player) => {
-        return accumulator + player.stats.goal_from_play;
+        // if a player has no recorded goals yet then count this as an int of 0
+        const playerGoals = player.stats.goal_from_play || 0;
+        return accumulator + playerGoals;
       }, 0);
       res.json({ totalGoals });
     }
@@ -198,7 +200,9 @@ router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
       // totalGoals was updated. This ensures a value will accumulate before the loop terminates
       const totalPoints = match.teams.players.reduce((accumulator, player) => {
-        return accumulator + player.stats.point_from_play;
+        // if a player has no recorded points yet then count this as an int of 0
+        const playerPoints = player.stats.point_from_play || 0;
+        return accumulator + playerPoints;
       }, 0);
 
       res.json({ totalPoints });
