@@ -44,4 +44,29 @@ router.get("/getTeamName", auth.reqAuth, async (req, res) => {
   }
 })
 
+// deleting one
+router.delete("/:id", getTeam, async (req, res) => {
+  try {
+    await res.team.deleteOne();
+    res.json({ message: "Deleted Team" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// gets one team
+async function getTeam(req, res, next) {
+  let team;
+  try {
+    team = await Team.findById(req.params.id);
+    if (team == null) {
+      return res.status(404).json({ message: "Cannot find team" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+  res.team = team;
+  next();
+}
+
 module.exports = router;
