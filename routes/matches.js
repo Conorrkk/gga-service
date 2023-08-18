@@ -111,6 +111,31 @@ router.patch("/:id/addGoal", auth.reqAuth, async (req, res) => {
   }
 });
 
+router.patch("/:id/addGoalDead", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.goal_from_dead": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 router.patch("/:id/addPoint", auth.reqAuth, async (req, res) => {
   try {
     const matchId = req.params.id;
@@ -125,6 +150,31 @@ router.patch("/:id/addPoint", auth.reqAuth, async (req, res) => {
       },
       {
         $inc: { "teams.players.$.stats.point_from_play": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/addPointDead", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the point_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.point_from_dead": 1 },
       },
       {
         new: true,
@@ -161,29 +211,80 @@ router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
   }
 });
 
-// get total goals scored by a player in all their matches
-// router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
-//   try {
-//     const matchId = req.params.id;
+router.patch("/:id/addBlock", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
 
-//     const match = await Match.findById(matchId);
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.block_hook": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
-//     if (!match) {
-//       return res.status(404).json({ message: "Match not found" });
-//     } else {
-//       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
-//       // totalGoals was updated. This ensures a value will accumulate before the loop terminates
-//       const totalGoals = match.teams.players.reduce((accumulator, player) => {
-//         // if a player has no recorded goals yet then count this as an int of 0
-//         const playerGoals = player.stats.goal_from_play || 0;
-//         return accumulator + playerGoals;
-//       }, 0);
-//       res.json({ totalGoals });
-//     }
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
+router.patch("/:id/addCatch", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.catch_made": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/addDrop", auth.reqAuth, async (req, res) => {
+  try {
+    const matchId = req.params.id;
+    const playerId = req.body.playerId;
+
+    // Update the goal_from_play statistic for the specified player
+    // $inc is for incrementing - can be used for all stats
+    const updatedMatch = await Match.findOneAndUpdate(
+      {
+        _id: matchId,
+        "teams.players.playerId": playerId,
+      },
+      {
+        $inc: { "teams.players.$.stats.catch_missed": 1 },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updatedMatch);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
 // get total goals scored by a team in one match
 router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
@@ -198,8 +299,8 @@ router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
       // totalGoals was updated. This ensures a value will accumulate before the loop terminates
       const totalGoals = match.teams.players.reduce((accumulator, player) => {
-        // if a player has no recorded goals yet then count this as an int of 0
-        const playerGoals = player.stats.goal_from_play || 0;
+        const playerGoals =
+          player.stats.goal_from_play + player.stats.goal_from_dead;
         return accumulator + playerGoals;
       }, 0);
       res.json({ totalGoals });
@@ -222,8 +323,8 @@ router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
       // totalGoals was updated. This ensures a value will accumulate before the loop terminates
       const totalPoints = match.teams.players.reduce((accumulator, player) => {
-        // if a player has no recorded points yet then count this as an int of 0
-        const playerPoints = player.stats.point_from_play || 0;
+        const playerPoints =
+          player.stats.point_from_play + player.stats.point_from_dead;
         return accumulator + playerPoints;
       }, 0);
 
@@ -270,7 +371,7 @@ router.patch("/:id/addOpponentGoals", auth.reqAuth, async (req, res) => {
 
 router.get("/player/:id", auth.reqAuth, async (req, res) => {
   try {
-    console.log("start")
+    console.log("start");
     const playerId = req.params.id;
     const matches = await Match.find({ "teams.players.playerId": playerId });
     res.json({ matches });
