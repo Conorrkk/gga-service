@@ -270,6 +270,7 @@ router.patch("/:id/addOpponentGoals", auth.reqAuth, async (req, res) => {
 
 router.get("/player/:id", auth.reqAuth, async (req, res) => {
   try {
+    console.log("start")
     const playerId = req.params.id;
     const matches = await Match.find({ "teams.players.playerId": playerId });
     res.json({ matches });
