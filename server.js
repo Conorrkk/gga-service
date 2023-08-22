@@ -44,6 +44,7 @@ app.set("trust proxy", 1)
 //     })
 //   );
 
+// const for different routes which will be used for db reqs
 const matchesRouter = require('./routes/matches')
 app.use('/matches', matchesRouter)
 

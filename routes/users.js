@@ -19,6 +19,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// gets a users club
 router.get("/club", auth.reqAuth, async (req, res) => {
   try {
     const userId = req.userId;

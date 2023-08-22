@@ -3,6 +3,7 @@ const router = express.Router();
 const Team = require("../models/team");
 const auth = require("../middleware/authentication");
 
+// post a new team
 router.post("/", auth.reqAuth, async (req, res) => {
   const team = new Team({
     teamName: req.body.club,
@@ -23,6 +24,7 @@ router.post("/", auth.reqAuth, async (req, res) => {
   }
 });
 
+// get all teams for this user
 router.get("/", auth.reqAuth, async (req, res) => {
   const userId = req.userId
   try {
@@ -33,18 +35,7 @@ router.get("/", auth.reqAuth, async (req, res) => {
   }
 });
 
-router.get("/getTeamName", auth.reqAuth, async (req, res) => {
-  const { teamId } = req.query;
-  try {
-    const team = await Team.find({ _id : teamId })
-    const nameToReturn = team[0].teamName
-    res.json(nameToReturn)
-  } catch (err) {
-    res.status(500).json({ message: "error interacting with db" });
-  }
-})
-
-// deleting one
+// deleting one team by id
 router.delete("/:id", getTeam, async (req, res) => {
   try {
     await res.team.deleteOne();
@@ -54,7 +45,7 @@ router.delete("/:id", getTeam, async (req, res) => {
   }
 });
 
-// get one team
+// get one team by id
 router.get("/:id", auth.reqAuth, getTeam, async (req, res) => {
   try {
     res.json(res.team);
@@ -63,7 +54,7 @@ router.get("/:id", auth.reqAuth, getTeam, async (req, res) => {
   }
 });
 
-// gets one team function
+// get one team function to use in db req
 async function getTeam(req, res, next) {
   let team;
   try {

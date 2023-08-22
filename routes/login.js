@@ -3,22 +3,18 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
+// checks if the user has entered correct email and password and if they have generated JWT token 
 router.post("/", async (req, res) => {
-
   const { email, password } = req.body;
-
   try {
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(401).json({ message: "Invalid email" });
     }
-
     user.comparePassword(password, async (err, isMatch) => {
       if (err || !isMatch) {
         return res.status(401).json({ message: "Invalid password" });
       }
-
       //   Generating JWT token
       const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
         expiresIn: "2h",
