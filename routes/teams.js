@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Team = require("../models/team");
 const auth = require("../middleware/authentication");
+const Match = require("../models/match");
+const Player = require("../models/player");
 
 // post a new team
 router.post("/", auth.reqAuth, async (req, res) => {
@@ -26,10 +28,10 @@ router.post("/", auth.reqAuth, async (req, res) => {
 
 // get all teams for this user
 router.get("/", auth.reqAuth, async (req, res) => {
-  const userId = req.userId
+  const userId = req.userId;
   try {
     const teams = await Team.find({ userId });
-    res.json({ teams })
+    res.json({ teams });
   } catch (err) {
     res.status(500).json({ message: "error interacting with db" });
   }
@@ -37,7 +39,11 @@ router.get("/", auth.reqAuth, async (req, res) => {
 
 // deleting one team by id
 router.delete("/:id", getTeam, async (req, res) => {
+  const id = req.params.id;
+  // delete the team and the players and matches associated with the team
   try {
+    await Match.deleteMany({ "teams.teamId": id });
+    await Player.deleteMany({ teamId: id });
     await res.team.deleteOne();
     res.json({ message: "Deleted Team" });
   } catch (err) {
