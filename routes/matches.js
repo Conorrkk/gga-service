@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Match = require("../models/match");
-const auth = require("../middleware/authentication");
 
 // get all matches
-router.get("/", auth.reqAuth, async (req, res) => {
-  const userId = req.userId;
+router.get("/", async (req, res) => {
+  const userId = req.session.user._id;
   try {
     const matches = await Match.find({ userId });
     res.json({ matches });
@@ -14,8 +13,8 @@ router.get("/", auth.reqAuth, async (req, res) => {
   }
 });
 
-// gett one match by id
-router.get("/:id", auth.reqAuth, async (req, res) => {
+// get one match by id
+router.get("/:id", async (req, res) => {
   try {
     const match = await Match.findById(req.params.id);
     if (match == null) {
@@ -28,13 +27,13 @@ router.get("/:id", auth.reqAuth, async (req, res) => {
 });
 
 // create new match
-router.post("/", auth.reqAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   const match = new Match({
     teams: {
       oppositionTeam: req.body.opponent,
       teamId: req.body.team._id,
     },
-    userId: req.userId,
+    userId: req.session.user._id,
   });
   try {
     const newMatch = await match.save();
@@ -45,7 +44,7 @@ router.post("/", auth.reqAuth, async (req, res) => {
 });
 
 // add players to match by id
-router.patch("/:id/addPlayers", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addPlayers", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -73,7 +72,7 @@ router.delete("/:id", getMatch, async (req, res) => {
 });
 
 // add a goal from play to specific player
-router.patch("/:id/addGoal", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addGoal", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -99,7 +98,7 @@ router.patch("/:id/addGoal", auth.reqAuth, async (req, res) => {
 });
 
 // add a goal from dead to specific player
-router.patch("/:id/addGoalDead", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addGoalDead", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -125,7 +124,7 @@ router.patch("/:id/addGoalDead", auth.reqAuth, async (req, res) => {
 });
 
 // add a point from play to specific player
-router.patch("/:id/addPoint", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addPoint", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -151,7 +150,7 @@ router.patch("/:id/addPoint", auth.reqAuth, async (req, res) => {
 });
 
 // add a point from dead to specific player
-router.patch("/:id/addPointDead", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addPointDead", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -177,7 +176,7 @@ router.patch("/:id/addPointDead", auth.reqAuth, async (req, res) => {
 });
 
 // add a wide to specific player
-router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addWide", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -203,7 +202,7 @@ router.patch("/:id/addWide", auth.reqAuth, async (req, res) => {
 });
 
 // add a block to specific player
-router.patch("/:id/addBlock", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addBlock", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -229,7 +228,7 @@ router.patch("/:id/addBlock", auth.reqAuth, async (req, res) => {
 });
 
 // add catch to specific player
-router.patch("/:id/addCatch", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addCatch", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -255,7 +254,7 @@ router.patch("/:id/addCatch", auth.reqAuth, async (req, res) => {
 });
 
 // add dropped catch to specific player
-router.patch("/:id/addDrop", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addDrop", async (req, res) => {
   try {
     const matchId = req.params.id;
     const playerId = req.body.playerId;
@@ -281,7 +280,7 @@ router.patch("/:id/addDrop", auth.reqAuth, async (req, res) => {
 });
 
 // get total goals scored by a team in one match
-router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
+router.get("/:id/totalGoals", async (req, res) => {
   try {
     const matchId = req.params.id;
 
@@ -305,7 +304,7 @@ router.get("/:id/totalGoals", auth.reqAuth, async (req, res) => {
 });
 
 // get total goals scored by a team in one match
-router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
+router.get("/:id/totalPoints", async (req, res) => {
   try {
     const matchId = req.params.id;
 
@@ -330,7 +329,7 @@ router.get("/:id/totalPoints", auth.reqAuth, async (req, res) => {
 });
 
 // record opponents points scored in a match
-router.patch("/:id/addOpponentPoints", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addOpponentPoints", async (req, res) => {
   try {
     const id = req.params.id;
     const points = req.body.pointsAgainst;
@@ -348,7 +347,7 @@ router.patch("/:id/addOpponentPoints", auth.reqAuth, async (req, res) => {
 });
 
 // record opponents goals scored in a match
-router.patch("/:id/addOpponentGoals", auth.reqAuth, async (req, res) => {
+router.patch("/:id/addOpponentGoals", async (req, res) => {
   try {
     const id = req.params.id;
     const goals = req.body.goalsAgainst;
@@ -366,7 +365,7 @@ router.patch("/:id/addOpponentGoals", auth.reqAuth, async (req, res) => {
 });
 
 // get matches that a certain player was in
-router.get("/player/:id", auth.reqAuth, async (req, res) => {
+router.get("/player/:id", async (req, res) => {
   try {
     console.log("start");
     const playerId = req.params.id;

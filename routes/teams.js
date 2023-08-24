@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const Team = require("../models/team");
-const auth = require("../middleware/authentication");
 const Match = require("../models/match");
 const Player = require("../models/player");
 
 // post a new team
-router.post("/", auth.reqAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   const team = new Team({
     teamName: req.body.club,
     teamLevel: req.body.teamLevel,
-    userId: req.userId,
+    userId: req.session.user._id,
   });
   try {
     const newTeam = await team.save();
@@ -27,8 +26,8 @@ router.post("/", auth.reqAuth, async (req, res) => {
 });
 
 // get all teams for this user
-router.get("/", auth.reqAuth, async (req, res) => {
-  const userId = req.userId;
+router.get("/", async (req, res) => {
+  const userId = req.session.user._id;
   try {
     const teams = await Team.find({ userId });
     res.json({ teams });
@@ -52,7 +51,7 @@ router.delete("/:id", getTeam, async (req, res) => {
 });
 
 // get one team by id
-router.get("/:id", auth.reqAuth, getTeam, async (req, res) => {
+router.get("/:id", getTeam, async (req, res) => {
   try {
     res.json(res.team);
   } catch (err) {

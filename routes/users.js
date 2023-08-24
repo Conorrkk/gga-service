@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const auth = require("../middleware/authentication");
 
 // registering a user
 router.post("/", async (req, res) => {
@@ -20,12 +19,13 @@ router.post("/", async (req, res) => {
 });
 
 // gets a users club
-router.get("/club", auth.reqAuth, async (req, res) => {
+router.get("/club", async (req, res) => {
   try {
-    const userId = req.userId;
-    const user = await User.findById(userId);
+    if (!req.session.user) {
+      return res.status(401).json({ message: "Unauthorised" });
+    }
 
-    const club = user.club;
+    const club = req.session.user.club;
     res.json({ club });
   } catch (err) {
     res.status(500).json({ message: "error interaction with db" });
