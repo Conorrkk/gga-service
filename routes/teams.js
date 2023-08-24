@@ -33,7 +33,7 @@ router.get("/", auth.reqAuth, async (req, res) => {
     const teams = await Team.find({ userId });
     res.json({ teams });
   } catch (err) {
-    res.status(500).json({ message: "error interacting with db" });
+    res.status(500).json({ message: "error interacting with the db" });
   }
 });
 
