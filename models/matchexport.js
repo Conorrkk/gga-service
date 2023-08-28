@@ -1,25 +1,25 @@
 const mongoose = require("mongoose");
 
 const matchexportSchema = new mongoose.Schema({
-  player: {
-    playerName: {
-      type: String,
-      required: true,
-    },
-    stats: {
-      goal_from_play: {
+  players: [
+    {
+      playerName: {
+        type: String,
+        required: true,
+      },
+      goalPlay: {
         type: Number,
         default: 0,
       },
-      point_from_play: {
+      pointPlay: {
         type: Number,
         default: 0,
       },
-      goal_from_dead: {
+      goalDead: {
         type: Number,
         default: 0,
       },
-      point_from_dead: {
+      pointDead: {
         type: Number,
         default: 0,
       },
@@ -27,19 +27,23 @@ const matchexportSchema = new mongoose.Schema({
         type: Number,
         default: 0,
       },
-      catch_made: {
+      catchMade: {
         type: Number,
         default: 0,
       },
-      catch_missed: {
+      catchMissed: {
         type: Number,
         default: 0,
       },
-      block_hook: {
+      block: {
         type: Number,
         default: 0,
       },
     },
+  ],
+  matchId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Match",
   },
 });
 

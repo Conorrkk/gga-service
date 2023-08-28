@@ -62,4 +62,7 @@ app.use("/teams", teamRouter);
 const playerRouter = require("./routes/players");
 app.use("/players", playerRouter);
 
+const exportRouter = require("./routes/exportmatch");
+app.use("/exportmatch", exportRouter);
+
 app.listen(3001, () => console.log("Server listening on port 3001"));
