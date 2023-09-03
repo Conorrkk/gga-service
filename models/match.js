@@ -47,10 +47,6 @@ const matchSchema = new mongoose.Schema({
                     type: Number,
                     default: 0
                 },
-                saved: {
-                    type: Number,
-                    default: 0
-                },
                 catch_made: {
                     type: Number,
                     default: 0
@@ -59,31 +55,7 @@ const matchSchema = new mongoose.Schema({
                     type: Number,
                     default: 0
                 },
-                pass_made: {
-                    type: Number,
-                    default: 0
-                },
-                pass_missed: {
-                    type: Number,
-                    default: 0
-                },
-                turnover_won: {
-                    type: Number,
-                    default: 0
-                },
-                free_conceded: {
-                    type: Number,
-                    default: 0
-                },
                 block_hook: {
-                    type: Number,
-                    default: 0
-                },
-                yellow_card: {
-                    type: Number,
-                    default: 0
-                },
-                red_card: {
                     type: Number,
                     default: 0
                 }

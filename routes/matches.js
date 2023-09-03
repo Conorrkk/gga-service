@@ -4,6 +4,7 @@ const Match = require("../models/match");
 
 // get all matches
 router.get("/", async (req, res) => {
+  console.log(req.session);
   const userId = req.session.user._id;
   try {
     const matches = await Match.find({ userId });
