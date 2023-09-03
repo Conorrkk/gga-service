@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
   const userId = req.session.user._id;
   try {
     const teams = await Team.find({ userId });
-    res.json({ teams });
+    res.status(200).json({ teams });
   } catch (err) {
     res.status(500).json({ message: "error interacting with the db" });
   }
@@ -44,7 +44,7 @@ router.delete("/:id", getTeam, async (req, res) => {
     await Match.deleteMany({ "teams.teamId": id });
     await Player.deleteMany({ teamId: id });
     await res.team.deleteOne();
-    res.json({ message: "Deleted Team" });
+    res.status(200).json({ message: "Deleted Team" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -53,7 +53,7 @@ router.delete("/:id", getTeam, async (req, res) => {
 // get one team by id
 router.get("/:id", getTeam, async (req, res) => {
   try {
-    res.json(res.team);
+    res.status(200).json(res.team);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -4,11 +4,10 @@ const Match = require("../models/match");
 
 // get all matches
 router.get("/", async (req, res) => {
-  console.log(req.session);
   const userId = req.session.user._id;
   try {
     const matches = await Match.find({ userId });
-    res.json({ matches });
+    res.status(200).json({ matches });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -21,7 +20,7 @@ router.get("/:id", async (req, res) => {
     if (match == null) {
       return res.status(404).json({ message: "Cannot find match" });
     }
-    res.json(match);
+    res.status(200).json(match);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -56,7 +55,7 @@ router.patch("/:id/addPlayers", async (req, res) => {
       { new: true } // Return the updated match
     );
 
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -92,7 +91,7 @@ router.patch("/:id/addGoal", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -118,7 +117,7 @@ router.patch("/:id/addGoalDead", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -144,7 +143,7 @@ router.patch("/:id/addPoint", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -170,7 +169,7 @@ router.patch("/:id/addPointDead", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -196,7 +195,7 @@ router.patch("/:id/addWide", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -222,7 +221,7 @@ router.patch("/:id/addBlock", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -248,7 +247,7 @@ router.patch("/:id/addCatch", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -274,7 +273,7 @@ router.patch("/:id/addDrop", async (req, res) => {
         new: true,
       }
     );
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -297,7 +296,7 @@ router.get("/:id/totalGoals", async (req, res) => {
           player.stats.goal_from_play + player.stats.goal_from_dead;
         return accumulator + playerGoals;
       }, 0);
-      res.json({ totalGoals });
+      res.status(200).json({ totalGoals });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -322,7 +321,7 @@ router.get("/:id/totalPoints", async (req, res) => {
         return accumulator + playerPoints;
       }, 0);
 
-      res.json({ totalPoints });
+      res.status(200).json({ totalPoints });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -341,7 +340,7 @@ router.patch("/:id/addOpponentPoints", async (req, res) => {
       { new: true }
     );
 
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -359,7 +358,7 @@ router.patch("/:id/addOpponentGoals", async (req, res) => {
       { new: true }
     );
 
-    res.json(updatedMatch);
+    res.status(200).json(updatedMatch);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -370,7 +369,7 @@ router.get("/player/:id", async (req, res) => {
   try {
     const playerId = req.params.id;
     const matches = await Match.find({ "teams.players.playerId": playerId });
-    res.json({ matches });
+    res.status(200).json({ matches });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

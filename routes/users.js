@@ -26,7 +26,7 @@ router.get("/club", async (req, res) => {
     }
 
     const club = req.session.user.club;
-    res.json({ club });
+    res.status(200).json({ club });
   } catch (err) {
     res.status(500).json({ message: "error interaction with db" });
   }

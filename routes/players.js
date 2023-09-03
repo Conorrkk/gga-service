@@ -10,7 +10,6 @@ router.post("/", async (req, res) => {
     playerPosition: req.body.playerPosition,
     teamId: req.body.teamId,
   });
-
   try {
     const newPlayer = await player.save();
     res.status(201).json(newPlayer);
@@ -24,7 +23,7 @@ router.get("/", async (req, res) => {
   const { teamId } = req.query;
   try {
     const players = await Player.find({ teamId : teamId });
-    res.json(players);
+    res.status(200).json(players);
   } catch (err) {
     res.status(500).json({ message: "error interacting with db" });
   }
@@ -37,7 +36,7 @@ router.get("/:id", async (req, res) => {
     if (player == null) {
       return res.status(404).json({ message: "Cannot find player" });
     }
-    res.json(player);
+    res.status(200).json(player);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
