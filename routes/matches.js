@@ -51,7 +51,7 @@ router.patch("/:id/addPlayers", async (req, res) => {
     const updatedMatch = await Match.findOneAndUpdate(
       // matching the match id with the one passed in
       { _id: matchId },
-      { $push: { "teams.players": { playerId } } }, // Add the players to the specific team
+      { $push: { "teams.players": { playerId } } }, // Add players to specific team
       { new: true } // Return the updated match
     );
 
