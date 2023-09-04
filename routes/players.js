@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   const { teamId } = req.query;
   try {
-    const players = await Player.find({ teamId : teamId });
+    const players = await Player.find({ teamId });
     res.status(200).json(players);
   } catch (err) {
     res.status(500).json({ message: "error interacting with db" });

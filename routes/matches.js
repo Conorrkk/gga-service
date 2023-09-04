@@ -290,11 +290,12 @@ router.get("/:id/totalGoals", async (req, res) => {
       return res.status(404).json({ message: "Match not found" });
     } else {
       // using Array.reduce method because an async forEach was causing loop to iterate and complete before
-      // totalGoals was updated. This ensures a value will accumulate before the loop terminates
-      const totalGoals = match.teams.players.reduce((accumulator, player) => {
+      // totalGoals was updated.
+      // ensures each player will be iterated over and the total updated before the loop terminates
+      const totalGoals = match.teams.players.reduce((goalCount, player) => {
         const playerGoals =
           player.stats.goal_from_play + player.stats.goal_from_dead;
-        return accumulator + playerGoals;
+        return goalCount + playerGoals;
       }, 0);
       res.status(200).json({ totalGoals });
     }
@@ -313,12 +314,10 @@ router.get("/:id/totalPoints", async (req, res) => {
     if (!match) {
       return res.status(404).json({ message: "Match not found" });
     } else {
-      // using Array.reduce method because an async forEach was causing loop to iterate and complete before
-      // totalGoals was updated. This ensures a value will accumulate before the loop terminates
-      const totalPoints = match.teams.players.reduce((accumulator, player) => {
+      const totalPoints = match.teams.players.reduce((pointCount, player) => {
         const playerPoints =
           player.stats.point_from_play + player.stats.point_from_dead;
-        return accumulator + playerPoints;
+        return pointCount + playerPoints;
       }, 0);
 
       res.status(200).json({ totalPoints });

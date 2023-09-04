@@ -20,7 +20,7 @@ router.use(
 );
 
 
-// checks if the user has entered correct email and password and if they have generated JWT token 
+// checks if the user has entered correct email and password and if they have begin a session
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
   try {

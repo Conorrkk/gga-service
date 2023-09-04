@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         .status(400)
         .json({ message: team.teamLevel + "team already created" });
     }
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 

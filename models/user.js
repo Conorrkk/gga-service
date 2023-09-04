@@ -37,6 +37,7 @@ bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
 });
 });
 
+// compares the entered password to the stored, encrypted password and returns the result
 userSchema.methods.comparePassword = function(candidatePassword, cb){
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if(err) return cb(er);
