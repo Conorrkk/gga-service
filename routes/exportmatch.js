@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const ExportDoc = require("../models/matchexport");
 const Player = require("../models/player");
 const Match = require("../models/match");
 
-// creates the new match export document for the matchexport schema
+// gets the data for the matchexport csv
 router.post("/", async (req, res) => {
   const matchId = req.body.matchId;
   const match = await Match.findById(matchId);
@@ -27,15 +26,15 @@ router.post("/", async (req, res) => {
     };
     matchStats.push(playerData);
   });
-  // use promise.all to ensure we iterate over each player in the match before moving on with execution
+  // use promise.all to ensure we iterate over each player before finishing execution
   try {
     await Promise.all(promises);
-    const newExportDoc = new ExportDoc({
+    const newExportDoc = {
       matchId: matchId,
       players: matchStats,
-    });
-    const savedExportDoc = await newExportDoc.save();
-    res.status(201).json(savedExportDoc);
+    };
+    
+    res.status(201).json(newExportDoc);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
